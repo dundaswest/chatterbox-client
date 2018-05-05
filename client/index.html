@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <!-- <meta http-equiv="refresh" content= "50" > -->
     <title>chatterbox</title>
     <link rel="stylesheet" href="styles/styles.css">
 
@@ -27,6 +28,7 @@
   <body>
     <div id="main">
       <h1>chatterbox</h1>
+      <button class="refresh">Refresh</button>
       <!-- Your HTML goes here! -->
     <div id="rooms">
       Room: <select id="roomSelect">
@@ -35,7 +37,7 @@
         <option selected>8floor</option>
       </select>
     </div>
-    <form action = 'javascript:console.log()' id="send" method="post">
+    <form id="send" method="post">
       <input type="text" name="message" id="message"/>
       <input type="submit" name="submit" class="submit"/>
     </form>
