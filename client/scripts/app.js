@@ -8,15 +8,11 @@ app.init = function () {
 };
 
 app.handleUsernameClick = function () {
-  $('.username').on('click', function(){
-    
-  });
+  $('.username').on('click', function(){});
 };
 
 app.handleSubmit = function () {
-  $('#send .submit').on('submit', function(){
-    
-  });
+  $('#send .submit').on('submit', function(){});
 };
 
 app.send = function (message) {
