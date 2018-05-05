@@ -12,13 +12,17 @@ $(document).ready(function () {
   };
 
   app.handleUsernameClick = function () {
-    $('.username').on('click', function(){});
+    $('.username').on('click', function(){
+      
+    });
   };
 
   app.handleSubmit = function () {
-    $('form').submit(function(event){
+    $('#send').submit(function(event){
+    
       var roomname = $('#roomSelect').find(":selected").text();
       var text = $("input[type = 'text']").val();
+      // text = `${text}`;
       app.send({
         username: '8TH FLOOR',
         text: text,
@@ -26,9 +30,10 @@ $(document).ready(function () {
       });
       var url = 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages';
       app.fetch(url);
+      event.preventDefault();
     });
   };
-
+//action="javascript:alert();"
   app.send = function (message) {
     $.ajax({
       // This is the url you should use to communicate with the parse API server.
