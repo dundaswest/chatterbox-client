@@ -7,7 +7,8 @@ $(document).ready(function () {
     this.handleSubmit();
     
     var url = 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages';
-    this.fetch(url, data => data.results.forEach(message => app.renderMessage(message)));
+    this.fetch(url);
+
   };
 
   app.handleUsernameClick = function () {
@@ -15,9 +16,16 @@ $(document).ready(function () {
   };
 
   app.handleSubmit = function () {
-    $('#send .submit').on('submit', function(event){
-      console.log(event);
-      // app.send(message);
+    $('form').submit(function(event){
+      var roomname = $('#roomSelect').find(":selected").text();
+      var text = $("input[type = 'text']").val();
+      app.send({
+        username: '8TH FLOOR',
+        text: text,
+        roomname: roomname,
+      });
+      var url = 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages';
+      app.fetch(url);
     });
   };
 
@@ -38,20 +46,20 @@ $(document).ready(function () {
     });
   };
 
-  app.fetch = function (url, callback) {
-    $.get(url, callback);
-    // $.ajax({
-    //   // This is the url you should use to communicate with the parse API server.
-    //   url: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
-    //   type: 'GET',
-    //   success: function () {
-    //     console.log('chatterbox: Message received');
-    //   },
-    //   error: function () {
-    //     // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
-    //     console.error('chatterbox: Failed to receive message');
-    //   }
-    // });
+  app.fetch = function (url) {
+    $.ajax({
+      // This is the url you should use to communicate with the parse API server.
+      url: 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages',
+      type: 'GET',
+      data: 'order=-createdAt',
+      success: data => {
+        data.results.forEach(message => app.renderMessage(message));
+      },
+      error: function (data) {
+        // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+        console.error('chatterbox: Failed to send message', data);
+      }
+    });
   };
 
   app.clearMessages = function () {
@@ -66,10 +74,16 @@ $(document).ready(function () {
     var text = $('<span>');
     text.text(`${message.text}`);
     
+    var date = $('<div>');
+    var time = moment(message.createdAt).format('MMMM Do YYYY, h:mm:ss a');
+    date.text(`${time}`);
+    
     var messageContainer = $('<div>');
     messageContainer.addClass('chat');
     messageContainer.append(usernameDiv);
     messageContainer.append(text);
+    messageContainer.append(date);
+    
     
     
     $('#chats').append(messageContainer);
