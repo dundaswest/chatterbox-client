@@ -67,6 +67,7 @@ form input[type=text] {
 
 .chat .username {
     font-weight: 800;
+    /*display: inline-block;*/
 }
 
 .chat .created {
@@ -76,6 +77,18 @@ form input[type=text] {
 
 .chat:hover {
     background-color: #ddd;
+}
+
+.roomname {
+    float: right;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.refresh {
+    float: right;
 }
 
 .spinner {
