@@ -9,6 +9,18 @@ $(document).ready(function () {
     $('.refresh').on('click', function () {
       app.fetch();
     });
+    $('.roomFilter').on('click', function () {
+      var roomname = $('#roomSelect').find(':selected').text();
+      app.fetch(roomname);
+    });    
+    $('.roomsAll').on('click', function () {
+      app.fetch();
+    });    
+    $('.addRoom').on('click', function () {
+      var room = $('#addRoom').val();
+      app.renderRoom(room);
+      $('#addRoom').val('');
+    });
     
     this._friends = {};
     this._rooms = {};
@@ -25,15 +37,13 @@ $(document).ready(function () {
         app._friends[username][friend] = true;
       } 
       app.fetch();
-      
-      console.log(app._friends[username][friend]);
     });
   };
 
   app.handleSubmit = function () {
     $('#send').submit(function(event) {
       var roomname = $('#roomSelect').find(':selected').text();
-      var text = $('input[type = "text"]').val();
+      var text = $('#message').val();
       var username = window.location.search.slice(10);
       app.send({
         username: username,
@@ -61,17 +71,16 @@ $(document).ready(function () {
     });
   };
 
-  app.fetch = function () {
+  app.fetch = function (roomFilter) {
     $.ajax({
       // This is the url you should use to communicate with the parse API server.
       url: this.server,
       type: 'GET',
       data: 'order=-createdAt',
       success: data => {
-        console.log(data);
         app.clearMessages();
         data.results.forEach(message => {
-          app.renderMessage(message);
+          app.renderMessage(message, roomFilter);
         });
         $('#roomSelect').empty();
         for (var room in app._rooms) {
@@ -89,7 +98,7 @@ $(document).ready(function () {
     $('#chats').empty();
   };
 
-  app.renderMessage = function (message) {
+  app.renderMessage = function (message, roomFilter) {
     
     var loggedInUser = window.location.search.slice(10);
     
@@ -103,7 +112,6 @@ $(document).ready(function () {
     text.text(`${message.text}`);
     if (app._friends[loggedInUser] && app._friends[loggedInUser][message.username]) {
       text.addClass('bold');
-      console.log('changed', app._friends[loggedInUser]);
     }
     
     var roomname = document.createElement('div');
@@ -124,7 +132,13 @@ $(document).ready(function () {
     messageContainer.append(text);
     messageContainer.append(date);
     
-    $('#chats').append(messageContainer);
+    if (roomFilter) {
+      if (message.roomname === roomFilter) {
+        $('#chats').append(messageContainer);
+      }
+    } else {
+      $('#chats').append(messageContainer);
+    }
   };
 
   app.renderRoom = function(lobbyName) {
@@ -133,7 +147,7 @@ $(document).ready(function () {
     $('#roomSelect').append(lobbyDiv);
   };
   
-  app.server = 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages';
+  app.server = 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages/';
   
   app.init();
 });
